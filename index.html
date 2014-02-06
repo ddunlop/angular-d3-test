@@ -1,0 +1,28 @@
+<!doctype html>
+<html ng-app="testApp">
+  <head>
+    <title>Test Graph</title>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/d3/d3.min.js"></script>
+    <script>
+      var testApp = angular.module('testApp', []);
+    </script>
+    <script src="controllers/graph.js"></script>
+    <script src="directives/d3graph.js"></script>
+    <script src="directives/d3graphline.js"></script>
+    <style>
+      .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div ng-controller="GraphCtrl">
+      <d3-graph>
+        <d3-graph-line data="getData()"/>
+      </d3-graph>
+    </div>
+  </body>
+</html>
