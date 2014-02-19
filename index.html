@@ -9,19 +9,35 @@
     </script>
     <script src="controllers/graph.js"></script>
     <script src="directives/d3graph.js"></script>
+    <script src="directives/d3graphaxis.js"></script>
     <script src="directives/d3graphline.js"></script>
     <style>
       .line {
         fill: none;
-        stroke: steelblue;
+        /*stroke: steelblue;*/
         stroke-width: 1.5px;
+      }
+
+      .axis {
+        fill: none;
+        stroke: black;
+      }
+
+      .axisright {
+        stroke: red;
       }
     </style>
   </head>
   <body>
     <div ng-controller="GraphCtrl">
       <d3-graph>
-        <d3-graph-line data="getData()"/>
+        <d3-graph-axis>
+          <d3-graph-line data="getData(0)" stroke="green"/>
+          <d3-graph-line data="getData(1)" stroke="blue"/>
+        </d3-graph-axis>
+        <d3-graph-axis>
+          <d3-graph-line data="getData(2)" stroke="red"/>
+        </d3-graph-axis>
       </d3-graph>
     </div>
   </body>
