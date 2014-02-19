@@ -3,6 +3,7 @@ testApp.directive('d3Graph', function() {
 	var svg,
 		y_axes = [],
     x,
+    component_types = {},
 		components = [];
 
   return {
@@ -49,22 +50,12 @@ testApp.directive('d3Graph', function() {
       });
       components.forEach(function(component) {
         var el;
-        switch(component.type) {
-          case 'line':
-            el = d3.svg.line()
-              .x(function(d) { return x(d[0]); })
-              .y(function(d) { return y_axes[component.axis](d[1]); })
-              .interpolate('basis');
-
-            svg.append("path")
-              .datum(component.data)
-              .attr('stroke', component.color)
-              .attr("class", "line")
-              .attr("d", el);
-
-            break;
-          default:
-            console.error('unkown component type:', component.type);
+        if(component.type in component_types) {
+          component_types[component.type](component.config,
+            svg, x, y_axes[component.axis]);
+        }
+        else {
+          console.error('unkown component type:', component.type);
         }
       });
     },
@@ -80,10 +71,14 @@ testApp.directive('d3Graph', function() {
 				return svg;
 			};
 
-			this.addLine = function(data, color) {
+      this.registerComponentType = function(type, cb) {
+        component_types[type] = cb;
+      };
+
+			this.addComponent = function(type, config) {
         var axis = y_axes[y_axes.length-1],
           domain = axis.domain(),
-          extent = d3.extent(data, function(d) { return d[1]; });
+          extent = d3.extent(config.data, function(d) { return d[1]; });
 
         axis.domain(
           [
@@ -91,12 +86,11 @@ testApp.directive('d3Graph', function() {
             Math.max(domain[1], extent[1])
           ]
         );
-        x.domain(d3.extent(data, function(d) { return d[0]; }));
+        x.domain(d3.extent(config.data, function(d) { return d[0]; }));
 				components.push({
-					type: 'line',
+					type: type,
 					axis: y_axes.length-1,
-          color: color,
-					data: data
+					config: config
 				});
 			};
 
